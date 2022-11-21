@@ -10,4 +10,4 @@ Run "app.py" to start the server.
 
 * The main page "/" shows list with all candidates.
 * "/candidates/user_pk" to get the candidate profile by "user_pk" (primary key).
-* "/skills/skill" to get list of candudates by "skill"
+* "/skills/skill" to get list of candidates by "skill"

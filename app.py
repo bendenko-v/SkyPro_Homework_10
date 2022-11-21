@@ -1,55 +1,27 @@
 from flask import Flask, abort
 
-from utils import load_candidates
+from utils import load_candidates, get_all, get_by_pk, get_by_skill
 from config import PATH
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def get_all() -> str:
-    html = '<pre>\n'
-    for candidate in data:
-        html += f"Имя кандидата - {candidate['name']}\n" \
-                f"Позиция кандидата - {candidate['position']}\n" \
-                f"Навыки - {','.join(candidate['skills'].split(','))}\n\n"
-    html += '</pre>'
-
-    return html
+def main_page() -> str:
+    return get_all(data)
 
 
 @app.route('/candidates/<int:user_pk>')
-def get_by_pk(user_pk):
-    try:
-        img_url = data[user_pk - 1]['picture']
-        html = f'<img src="{img_url}"><br>\n'
-
-        html += f"<pre>" \
-                f"Имя кандидата - {data[user_pk - 1]['name']}\n" \
-                f"Позиция кандидата - {data[user_pk - 1]['position']}\n" \
-                f"Навыки - {','.join(data[user_pk - 1]['skills'].split(','))}\n" \
-                f"</pre>"
-    except (IndexError, TypeError):
-        raise abort(404)
-
-    return html
+def candidate_page(user_pk):
+    if 1 <= user_pk <= len(data):
+        return get_by_pk(data[user_pk - 1])
+    else:
+        abort(404)
 
 
 @app.route('/skills/<skill>')
-def get_by_skill(skill):
-    html = '<pre>\n'
-    result = ''
-    for candidate in data:
-        if skill.lower() in candidate['skills'].lower():
-            result += f"Имя кандидата - {candidate['name']}\n" \
-                      f"Позиция кандидата - {candidate['position']}\n" \
-                      f"Навыки - {','.join(candidate['skills'].split(','))}\n\n"
-    if not result:
-        result = 'No candidates found for this skill!'
-
-    html += result + '</pre>'
-
-    return html
+def candidates_by_skill_page(skill):
+    return get_by_skill(data, skill)
 
 
 @app.errorhandler(404)
@@ -61,10 +33,9 @@ def not_found(error):
     return html
 
 
-if __name__ == '__main__':
-    data = load_candidates(PATH)
+data = load_candidates(PATH)
 
-    if not data:
-        print("Error. Failed to load data from json file.")
-    else:
-        app.run(debug=True)
+if not data:
+    print("Error. Failed to load data from json file.")
+else:
+    app.run(debug=True)
