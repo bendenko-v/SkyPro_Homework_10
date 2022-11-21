@@ -3,8 +3,6 @@ from flask import Flask, abort
 from utils import load_candidates
 from config import PATH
 
-data = load_candidates(PATH)
-
 app = Flask(__name__)
 
 
@@ -44,8 +42,8 @@ def get_by_skill(skill):
     for candidate in data:
         if skill.lower() in candidate['skills'].lower():
             result += f"Имя кандидата - {candidate['name']}\n" \
-                    f"Позиция кандидата - {candidate['position']}\n" \
-                    f"Навыки - {','.join(candidate['skills'].split(','))}\n\n"
+                      f"Позиция кандидата - {candidate['position']}\n" \
+                      f"Навыки - {','.join(candidate['skills'].split(','))}\n\n"
     if not result:
         result = 'No candidates found for this skill!'
 
@@ -64,4 +62,9 @@ def not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    data = load_candidates(PATH)
+
+    if not data:
+        print("Error. Failed to load data from json file.")
+    else:
+        app.run(debug=True)
