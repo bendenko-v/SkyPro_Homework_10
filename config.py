@@ -1,0 +1,1 @@
+PATH = 'candidates.json'
