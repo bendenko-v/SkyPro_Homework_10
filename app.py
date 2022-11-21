@@ -1,4 +1,4 @@
-from flask import Flask, abort  # render_template
+from flask import Flask, abort
 
 from utils import load_candidates
 from config import PATH
